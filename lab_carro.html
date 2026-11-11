@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Teste Carro POO</title>
+</head>
+<body>
+
+  <h1>Classe Carro - Teste de POO</h1>
+
+  <!-- Painel de Informações -->
+  <p>Motor: <strong id="status-motor">Desligado</strong></p>
+  <p>Velocidade: <strong id="status-velocidade">0 km/h</strong></p>
+  <p>Combustível (GET): <strong id="status-combustivel">50 L</strong></p>
+
+  <hr>
+
+  <!-- Botões de Ação -->
+  <button onclick="toggleMotor()">Ligar / Desligar Motor</button>
+  <button onclick="executarCorrer()">Chamar correr()</button>
+
+  <br><br>
+
+  <!-- Formulário do SET -->
+  <input type="number" id="input-combustivel" value="60">
+  <button onclick="executarSet()">Executar set combustivel</button>
+
+  <hr>
+
+  <h3>Console Output:</h3>
+  <div id="console-output"></div>
+
+  <script>
+    class Carro {
+      #combustivel;
+
+      constructor(marca, modelo, cor, combustivelInicial = 20) {
+        this.marca = marca;
+        this.modelo = modelo;
+        this.cor = cor;
+        this.ligado = false;
+        this.velocidade = 0;
+        this.#combustivel = combustivelInicial;
+      }
+
+      get combustivel() {
+        return this.#combustivel;
+      }
+
+      set combustivel(novoValor) {
+        if (novoValor < 0) {
+          logConsole("ERRO: O combustível não pode ser negativo!");
+        } else if (novoValor > 60) {
+          logConsole("ERRO: O tanque só suporta até 60 litros!");
+        } else {
+          this.#combustivel = novoValor;
+          logConsole(`Tanque atualizado para ${this.#combustivel}L com sucesso!`);
+        }
+      }
+
+      correr() {
+        if (this.ligado) {
+          this.velocidade += 10;
+          this.#combustivel -= 2;
+          logConsole(`O ${this.modelo} acelerou para ${this.velocidade} km/h!`);
+        } else {
+          logConsole(`O ${this.modelo} não pode correr porque está desligado.`);
+        }
+      }
+    }
+
+    const carro01 = new Carro("Toyota", "Corolla", "Prata", 50);
+
+    function logConsole(msg) {
+      document.getElementById("console-output").innerHTML += `<p>> ${msg}</p>`;
+    }
+
+    function atualizarUI() {
+      document.getElementById("status-motor").textContent = carro01.ligado ? "LIGADO" : "DESLIGADO";
+      document.getElementById("status-velocidade").textContent = `${carro01.velocidade} km/h`;
+      document.getElementById("status-combustivel").textContent = `${carro01.combustivel} L`;
+    }
+
+    function toggleMotor() {
+      carro01.ligado = !carro01.ligado;
+      if (!carro01.ligado) carro01.velocidade = 0;
+      logConsole(`O motor foi ${carro01.ligado ? "ligado" : "desligado"}.`);
+      atualizarUI();
+    }
+
+    function executarCorrer() {
+      carro01.correr();
+      atualizarUI();
+    }
+
+    function executarSet() {
+      const valor = Number(document.getElementById("input-combustivel").value);
+      carro01.combustivel = valor;
+      atualizarUI();
+    }
+
+    atualizarUI();
+  </script>
+
+</body>
+</html>
